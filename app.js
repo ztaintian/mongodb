@@ -1,11 +1,14 @@
-import express from 'express'
-import config from 'config-lite'
+import express from 'express';
+import config from 'config';
+import './mongodb/db.js';
+import winston from 'winston';//Winston是Node.js最流行的日志框架之一
+import expressWinston from 'express-winston';
+import connectMongo from 'connect-mongo';
+import cookieParser from 'cookie-parser'
+import session from 'express-session';
+import router from './router';
 const app = express();
-console.log(config.url)
-// const port = '3000';
-app.get('/', function(req, res){
-  res.send('hello world');
-});
+
 app.all('*', (req, res, next) => {
 	res.header("Access-Control-Allow-Origin", req.headers.origin || '*');
 	res.header("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With");
@@ -19,8 +22,46 @@ app.all('*', (req, res, next) => {
 	}
 });
 
-app.listen(3000,() =>{
-	// console.log(`listen on port ${port}`)
-})
+const MongoStore = connectMongo(session);
+app.use(cookieParser());
+app.use(session({
+	  	name: config.session.name,
+		secret: config.session.secret,
+		resave: true,
+		saveUninitialized: false,
+		cookie: config.session.cookie,
+		store: new MongoStore({
+	  	url: config.url
+	})
+}))
 
-// kk
+router(app);
+//日志
+app.use(expressWinston.logger({
+    transports: [
+        new (winston.transports.Console)({
+          json: true,
+          colorize: true
+        }),
+        new winston.transports.File({
+          filename: 'logs/success.log'
+        })
+    ]
+}));
+
+
+app.use(expressWinston.errorLogger({
+    transports: [
+        new winston.transports.Console({
+          json: true,
+          colorize: true
+        }),
+        new winston.transports.File({
+          filename: 'logs/error.log'
+        })
+    ]
+}));
+
+app.listen(config.port,() =>{
+	console.log(`listen on port ${config.port}`)
+})
