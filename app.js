@@ -6,7 +6,7 @@ import expressWinston from 'express-winston';
 import connectMongo from 'connect-mongo';
 import cookieParser from 'cookie-parser'
 import session from 'express-session';
-import router from './router';
+import router from './router/index';
 const app = express();
 
 app.all('*', (req, res, next) => {
@@ -62,6 +62,9 @@ app.use(expressWinston.errorLogger({
     ]
 }));
 
+app.use((err, req, res, next) => {
+  res.status(404).send('未找到当前路由');
+});
 app.listen(config.port,() =>{
 	console.log(`listen on port ${config.port}`)
 })
