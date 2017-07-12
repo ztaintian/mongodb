@@ -1,4 +1,4 @@
-import AdminModdel from '../models/admin';
+import AdminModel from '../models/admin';
 import formidable from 'formidable';  //数据格式处理
 import dtime from 'time-formater'; //处理时间格式
 import crypto from 'crypto'; //加密M
@@ -98,7 +98,7 @@ class Admin {
 	async register(req,res,next){
 		const form = new formidable.IncomingForm();
 		form.parse(req,async(err,fields,files)=>{
-			console.log(fields.aa)
+			console.log(fields)
 			if(err){
 				res.send({
 					status:0,
@@ -131,6 +131,7 @@ class Admin {
 						message:'用户已经存在',
 					})
 				}else{
+					console.log('注册管理员成功')
 					const adminTip = status == 1? '管理员':'超级管理员'
 					// const admin_id = await this.getId('admin_id');
 					const newpassword = await this.encryption(password);
@@ -143,7 +144,7 @@ class Admin {
 						status,
 					}
 					await AdminModel.create(newAdmin)
-					req.session.admin_id = admin_id;
+					// req.session.admin_id = admin_id;
 					res.send({
 						status:1,
 						message:'注册管理员成功',
