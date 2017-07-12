@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
 	port: 3000,
-	url: 'mongodb://localhost:27017/elm',
+	url: 'mongodb://localhost:27017/elmtest',
 	session: {
 		name: 'SID',
 		secret: 'SID',
