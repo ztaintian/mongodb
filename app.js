@@ -32,7 +32,7 @@ app.use(session({
 		cookie: config.session.cookie,
 		store: new MongoStore({
 	  	url: config.url
-	})
+	  })
 }))
 
 router(app);

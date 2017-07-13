@@ -1,7 +1,7 @@
 import AdminModel from '../models/admin';
 import formidable from 'formidable';  //数据格式处理
 import dtime from 'time-formater'; //处理时间格式
-import crypto from 'crypto'; //加密M
+import crypto from 'crypto'; //加密Md5
 
 // class Admin extends AddressComponent {
 class Admin {
@@ -76,7 +76,7 @@ class Admin {
 						message:'该用户已存在，密码输入错误',
 					})
 				}else{
-					// req.session.admin_id = admin.id;
+					req.session.admin_id = admin.id;
 					res.send({
 						status:1,
 						success:'登录成功',
